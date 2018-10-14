@@ -38,4 +38,25 @@ describe('Routes', () => {
       expect(response.body).toEqual(mockGetBookValue)
     })
   })
+
+  describe('POST /buy', () => {
+    let response
+
+    const mockRequestBody = {
+      qty: 10,
+      prc: 9.5
+    }
+    
+    beforeAll(async () => {
+      response = await request(app).post('/buy').send(mockRequestBody)
+    })
+
+    afterAll(() => {
+      matchingEngine.buy.mockReset()
+    })
+    
+    it('should return 200', () => {
+      expect(response.status).toEqual(200)
+    })
+  })
 })
