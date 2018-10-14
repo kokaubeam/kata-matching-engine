@@ -1,6 +1,9 @@
 const express = require('express')
 const request = require('supertest')
 const route = require('./routes')
+const matchingEngine = require('./services/matching-engine')
+
+jest.mock('./services/matching-engine')
 
 describe('Routes', () => {
   let app
@@ -12,9 +15,19 @@ describe('Routes', () => {
 
   describe('GET /books', () => {
     let response
+
+    const mockGetBookValue = {
+      buys: [],
+      sells: []
+    }
     
     beforeAll(async () => {
+      matchingEngine.getBook.mockReturnValue(mockGetBookValue)
       response = await request(app).get('/book')
+    })
+
+    afterAll(() => {
+      matchingEngine.getBook.mockReset()
     })
     
     it('should return 200', () => {
@@ -22,10 +35,7 @@ describe('Routes', () => {
     })
 
     it('should return the current matching engine book', () => {
-      expect(response.body).toEqual({
-        buys: [],
-        sells: []
-      })
+      expect(response.body).toEqual(mockGetBookValue)
     })
   })
 })
