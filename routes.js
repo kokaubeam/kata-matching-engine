@@ -14,4 +14,12 @@ router.post('/buy', function(req, res) {
   res.send()
 })
 
+router.post('/sell', function(req, res) {
+  const {qty: quantity, prc: price} = req.body
+
+  matchingEngine.sell(quantity, price)
+  
+  res.send()
+})
+
 module.exports = router

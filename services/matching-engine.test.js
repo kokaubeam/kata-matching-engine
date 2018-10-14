@@ -23,7 +23,19 @@ describe('Service: Matching Engine', () => {
       result = matchingEngine.buy()
     })
 
-    it('should return a structured result', () => {
+    it('should return true', () => {
+      expect(result).toEqual(true)
+    })
+  })
+
+  describe('#sell', () => {
+    let result
+  
+    beforeAll(() => {
+      result = matchingEngine.sell()
+    })
+
+    it('should return true', () => {
       expect(result).toEqual(true)
     })
   })
