@@ -2,17 +2,11 @@ const express = require('express')
 const request = require('supertest')
 const route = require('./routes')
 const matchingEngine = require('./services/matching-engine')
+const app = require('./app')
 
 jest.mock('./services/matching-engine')
 
 describe('Routes', () => {
-  let app
-
-  beforeAll(() => {
-    app = express()
-    app.use(route)
-  })
-
   describe('GET /books', () => {
     let response
 
@@ -48,7 +42,9 @@ describe('Routes', () => {
     }
     
     beforeAll(async () => {
-      response = await request(app).post('/buy').send(mockRequestBody)
+      response = await request(app)
+        .post('/buy')
+        .send(mockRequestBody)
     })
 
     afterAll(() => {
@@ -57,6 +53,10 @@ describe('Routes', () => {
     
     it('should return 200', () => {
       expect(response.status).toEqual(200)
+    })
+
+    it('should place a buy', () => {
+      expect(matchingEngine.buy).toBeCalledWith(mockRequestBody.qty, mockRequestBody.prc)
     })
   })
 })

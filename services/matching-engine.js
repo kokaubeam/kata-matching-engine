@@ -7,6 +7,11 @@ function getBook() {
   return inMemoryBook
 }
 
+function buy(quality, price) {
+  return true
+}
+
 module.exports = {
-  getBook
+  getBook,
+  buy
 }

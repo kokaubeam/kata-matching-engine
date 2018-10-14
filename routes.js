@@ -7,6 +7,10 @@ router.get('/book', function(req, res) {
 })
 
 router.post('/buy', function(req, res) {
+  const {qty: quantity, prc: price} = req.body
+
+  matchingEngine.buy(quantity, price)
+  
   res.send()
 })
 

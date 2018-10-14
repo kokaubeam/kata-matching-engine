@@ -15,4 +15,16 @@ describe('Service: Matching Engine', () => {
       })
     })
   })
+
+  describe('#buy', () => {
+    let result
+  
+    beforeAll(() => {
+      result = matchingEngine.buy()
+    })
+
+    it('should return a structured result', () => {
+      expect(result).toEqual(true)
+    })
+  })
 })
