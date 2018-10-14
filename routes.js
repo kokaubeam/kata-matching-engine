@@ -3,7 +3,12 @@ const router = express.Router()
 const matchingEngine = require('./services/matching-engine')
 
 router.get('/book', function(req, res) {
-  res.json(matchingEngine.getBook())
+  const { buys, sells } = matchingEngine.getBook()
+
+  res.json({
+    buys: buys.map(({ quantity: qty, price: prc }) => ({ qty, prc })),
+    sells: sells.map(({ quantity: qty, price: prc }) => ({ qty, prc }))
+  })
 })
 
 router.post('/buy', function(req, res) {

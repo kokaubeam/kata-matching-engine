@@ -11,8 +11,8 @@ describe('Routes', () => {
     let response
 
     const mockGetBookValue = {
-      buys: [],
-      sells: []
+      buys: [{ quantity: 10, price: 5 }],
+      sells: [{ quantity: 15, price: 4.5 }]
     }
     
     beforeAll(async () => {
@@ -29,7 +29,10 @@ describe('Routes', () => {
     })
 
     it('should return the current matching engine book', () => {
-      expect(response.body).toEqual(mockGetBookValue)
+      expect(response.body).toEqual({
+        buys: [{ qty: 10, prc: 5 }],
+        sells: [{ qty: 15, prc: 4.5 }]
+      })
     })
   })
 
