@@ -102,5 +102,31 @@ describe('Service: Matching Engine', () => {
         })
       })
     })
+
+    describe('when adding multiple sells', () => {
+      let book
+  
+      beforeAll(() => {
+        matchingEngine.sell(10, 10)
+        matchingEngine.sell(10, 5)
+        matchingEngine.sell(10, 15)
+        book = matchingEngine.getBook()
+      })
+
+      afterAll(() => {
+        matchingEngine.clearBook()
+      })
+
+      it('should sort the sells by price ascending', () => {
+        expect(book).toEqual({
+          buys: [],
+          sells: [
+            { quantity: 10, price: 5 },
+            { quantity: 10, price: 10 },
+            { quantity: 10, price: 15 }
+          ]
+        })
+      })
+    })
   })
 })

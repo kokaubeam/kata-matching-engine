@@ -20,6 +20,7 @@ function buy(quantity, price) {
 
 function sell(quantity, price) {
   inMemoryBook.sells.push({ quantity, price })
+  inMemoryBook.sells.sort((a, b) => a.price > b.price)
 }
 
 module.exports = {
