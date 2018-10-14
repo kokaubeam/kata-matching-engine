@@ -17,14 +17,20 @@ describe('Service: Matching Engine', () => {
   })
 
   describe('#buy', () => {
-    let result
+    describe('when the book is empty', () => {
+      let book
   
-    beforeAll(() => {
-      result = matchingEngine.buy()
-    })
+      beforeAll(() => {
+        matchingEngine.buy(10, 9.5)
+        book = matchingEngine.getBook()
+      })
 
-    it('should return true', () => {
-      expect(result).toEqual(true)
+      it('should add the buy to the book', () => {
+        expect(book).toEqual({
+          buys: [ { quantity: 10, price: 9.5 } ],
+          sells: []
+        })
+      })
     })
   })
 

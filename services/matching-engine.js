@@ -7,11 +7,11 @@ function getBook() {
   return inMemoryBook
 }
 
-function buy(quality, price) {
-  return true
+function buy(quantity, price) {
+  inMemoryBook.buys.push({ quantity, price })
 }
 
-function sell(quality, price) {
+function sell(quantity, price) {
   return true
 }
 
