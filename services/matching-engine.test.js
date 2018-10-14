@@ -80,6 +80,30 @@ describe('Service: Matching Engine', () => {
         })
       })
     })
+
+    describe('when adding a buy with qualified sells', () => {
+      let book
+  
+      beforeAll(() => {
+        matchingEngine.sell(5, 10)
+        matchingEngine.sell(1, 9)
+        matchingEngine.buy(4, 10)
+        book = matchingEngine.getBook()
+      })
+
+      afterAll(() => {
+        matchingEngine.clearBook()
+      })
+
+      it('should buy the qualified sells starting with the lowest price first', () => {
+        expect(book).toEqual({
+          buys: [],
+          sells: [
+            { quantity: 2, price: 10 }
+          ]
+        })
+      })
+    })
   })
 
   describe('#sell', () => {
@@ -125,6 +149,31 @@ describe('Service: Matching Engine', () => {
             { quantity: 10, price: 10 },
             { quantity: 10, price: 15 }
           ]
+        })
+      })
+    })
+
+    describe('when adding a sell with qualified buys', () => {
+      let book
+  
+      beforeAll(() => {
+        matchingEngine.buy(5, 10)
+        matchingEngine.buy(1, 9)
+        matchingEngine.sell(4, 9)
+        book = matchingEngine.getBook()
+      })
+
+      afterAll(() => {
+        matchingEngine.clearBook()
+      })
+
+      it('should sell to the qualified buys executing at the highest price first', () => {
+        expect(book).toEqual({
+          buys: [
+            { quantity: 1, price: 10 },
+            { quantity: 1, price: 9 }
+          ],
+          sells: []
         })
       })
     })
