@@ -2,7 +2,7 @@ FROM node:10.12-alpine as dependencies
 WORKDIR /app
 COPY package*.json ./
 RUN npm set progress=false && npm config set depth 0
-RUN npm install --only=production
+RUN npm install --production
 RUN cp -R node_modules prod_node_modules
 RUN npm install
 
