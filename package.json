@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "start:dev": "nodemon ./bin/www",
     "test": "jest",
-    "e2e": "jest app.e2e.js"
+    "e2e": "jest --testRegex=app\\.e2e\\.js"
   },
   "dependencies": {
     "debug": "~2.6.9",
