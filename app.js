@@ -16,10 +16,16 @@ app.use(function(req, res, next) {
 })
 
 app.use(function(err, req, res, next) {
-  res.status(err.status || 500)
-  res.json({
+  const body = {
     message: err.message
-  })
+  }
+  
+  if (err.status === 422 && err.errors) {
+    body.errors = err.errors
+  }
+  
+  res.status(err.status || 500)
+  res.json(body)
 })
 
 module.exports = app

@@ -1,6 +1,5 @@
-const express = require('express')
+const createError = require('http-errors')
 const request = require('supertest')
-const route = require('./routes')
 const matchingEngine = require('./services/matching-engine')
 const app = require('./app')
 
@@ -37,56 +36,134 @@ describe('Routes', () => {
   })
 
   describe('POST /buy', () => {
-    let response
-
-    const mockRequestBody = {
-      qty: 10,
-      prc: 9.5
-    }
-    
-    beforeAll(async () => {
-      response = await request(app)
-        .post('/buy')
-        .send(mockRequestBody)
+    describe('when the schema is valid', () => {
+      let response
+  
+      const mockRequestBody = {
+        qty: 10,
+        prc: 9.5
+      }
+      
+      beforeAll(async () => {
+        response = await request(app)
+          .post('/buy')
+          .send(mockRequestBody)
+      })
+  
+      afterAll(() => {
+        matchingEngine.buy.mockReset()
+      })
+      
+      it('should return 200', () => {
+        expect(response.status).toEqual(200)
+      })
+  
+      it('should place a buy', () => {
+        expect(matchingEngine.buy).toBeCalledWith(mockRequestBody.qty, mockRequestBody.prc)
+      })
     })
 
-    afterAll(() => {
-      matchingEngine.buy.mockReset()
-    })
-    
-    it('should return 200', () => {
-      expect(response.status).toEqual(200)
-    })
+    describe('when the schema is NOT valid', () => {
+      let response
+  
+      const mockRequestBody = {
+        qty: -10,
+        prc: 'asdf'
+      }
+      
+      beforeAll(async () => {
+        response = await request(app)
+          .post('/buy')
+          .send(mockRequestBody)
+      })
+  
+      afterAll(() => {
+        matchingEngine.buy.mockReset()
+      })
+      
+      it('should return 422', () => {
+        expect(response.status).toEqual(422)
+      })
+  
+      it('should NOT place a buy', () => {
+        expect(matchingEngine.buy).not.toBeCalled()
+      })
 
-    it('should place a buy', () => {
-      expect(matchingEngine.buy).toBeCalledWith(mockRequestBody.qty, mockRequestBody.prc)
+      it('should respond with the errors', () => {
+        expect(response.body).toEqual({
+          message: createError(422).message,
+          errors: {
+            prc: 'must be a number',
+            qty: 'must be a positive number'
+          }
+        })
+      })
     })
   })
 
   describe('POST /sell', () => {
-    let response
+    describe('when the schema is valid', () => {
+      let response
 
-    const mockRequestBody = {
-      qty: 10,
-      prc: 9.5
-    }
-    
-    beforeAll(async () => {
-      response = await request(app)
-        .post('/sell')
-        .send(mockRequestBody)
+      const mockRequestBody = {
+        qty: 10,
+        prc: 9.5
+      }
+      
+      beforeAll(async () => {
+        response = await request(app)
+          .post('/sell')
+          .send(mockRequestBody)
+      })
+
+      afterAll(() => {
+        matchingEngine.sell.mockReset()
+      })
+      
+      it('should return 200', () => {
+        expect(response.status).toEqual(200)
+      })
+
+      it('should place a sell', () => {
+        expect(matchingEngine.sell).toBeCalledWith(mockRequestBody.qty, mockRequestBody.prc)
+      })
     })
 
-    afterAll(() => {
-      matchingEngine.sell.mockReset()
-    })
-    
-    it('should return 200', () => {
-      expect(response.status).toEqual(200)
-    })
+    describe('when the schema is NOT valid', () => {
+      let response
+  
+      const mockRequestBody = {
+        qty: null,
+        prc: '-55'
+      }
+      
+      beforeAll(async () => {
+        response = await request(app)
+          .post('/sell')
+          .send(mockRequestBody)
+      })
+  
+      afterAll(() => {
+        matchingEngine.sell.mockReset()
+      })
+      
+      it('should return 422', () => {
+        expect(response.status).toEqual(422)
+      })
+  
+      it('should NOT place a buy', () => {
+        expect(matchingEngine.sell).not.toBeCalled()
+      })
 
-    it('should place a sell', () => {
-      expect(matchingEngine.sell).toBeCalledWith(mockRequestBody.qty, mockRequestBody.prc)
+      it('should respond with the errors', () => {
+        expect(response.body).toEqual({
+          message: createError(422).message,
+          errors: {
+            prc: 'must be a positive number',
+            qty: 'must be a number'
+          }
+        })
+      })
     })
   })
 })
